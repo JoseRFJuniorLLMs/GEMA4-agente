@@ -13,9 +13,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from openai import OpenAI
 from config import (
     LM_STUDIO_BASE_URL, LM_STUDIO_API_KEY, MODEL_NAME,
-    MAX_ITERATIONS, MAX_TOKENS, TEMPERATURE, SYSTEM_PROMPT
+    MAX_ITERATIONS, MAX_TOKENS, TEMPERATURE, SYSTEM_PROMPT,
+    CONTEXT_WINDOW
 )
 from core.registry import TOOL_FUNCTIONS, TOOLS_SPEC
+from core.context import trim_context, get_context_stats
 
 
 class AgentLoop:
@@ -91,6 +93,13 @@ class AgentLoop:
         while self.iteration < MAX_ITERATIONS:
             self.iteration += 1
             self._log("iteration", f"Iteração {self.iteration}/{MAX_ITERATIONS}")
+
+            # ── Trim contexto se necessário ──────────────────────────────
+            self.messages = trim_context(
+                self.messages,
+                max_tokens=int(CONTEXT_WINDOW * 0.85),  # margem de 15%
+                keep_last_n=10
+            )
 
             # ── Pensa ────────────────────────────────────────────────────────
             response = self._call_model()
