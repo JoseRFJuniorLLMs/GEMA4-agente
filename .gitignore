@@ -1,0 +1,8 @@
+# Arquivos gerados pelo agente
+data/sessions/
+data/logs/
+_agent_tmp_exec.py
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
