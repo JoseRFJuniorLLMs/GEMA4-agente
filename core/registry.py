@@ -16,6 +16,7 @@ from tools.shell import run_command, run_python, git_command, install_package, g
 from tools.web import search_web, fetch_url, make_http_request
 from tools.memory import memory_save, memory_read, memory_list, memory_delete, list_sessions
 from tools.heraclitus import heraclitus_append, heraclitus_read, heraclitus_list_collections
+from tools.code_analysis import analyze_project, analyze_python_file, count_todos
 
 
 # ─── Mapeamento nome → função ─────────────────────────────────────────────────
@@ -54,6 +55,10 @@ TOOL_FUNCTIONS = {
     "heraclitus_append":            heraclitus_append,
     "heraclitus_read":              heraclitus_read,
     "heraclitus_list_collections":  heraclitus_list_collections,
+    # Análise de Código
+    "analyze_project":       analyze_project,
+    "analyze_python_file":   analyze_python_file,
+    "count_todos":           count_todos,
 }
 
 
@@ -432,6 +437,14 @@ TOOLS_SPEC = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "list_sessions",
+            "description": "Lista todas as sessões de conversa salvas anteriormente.",
+            "parameters": {"type": "object", "properties": {}, "required": []},
+        },
+    },
 
     # ── HERACLITUSDB ─────────────────────────────────────────────────────────
     {
@@ -473,4 +486,49 @@ TOOLS_SPEC = [
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
+
+    # ── ANÁLISE DE CÓDIGO ────────────────────────────────────────────────────
+    {
+        "type": "function",
+        "function": {
+            "name": "analyze_project",
+            "description": "Analisa a estrutura completa de um projeto: linguagens usadas, total de linhas, arquivos, pontos de entrada e dependências detectadas.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "Caminho raiz do projeto a analisar"},
+                },
+                "required": ["path"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "analyze_python_file",
+            "description": "Analisa um arquivo Python: classes, métodos, funções de nível superior e imports. Útil para entender a estrutura antes de editar.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "Caminho do arquivo .py"},
+                },
+                "required": ["path"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "count_todos",
+            "description": "Encontra todos os comentários TODO, FIXME, HACK, BUG e NOTE em um projeto ou arquivo.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "path": {"type": "string", "description": "Arquivo ou diretório raiz para buscar"},
+                },
+                "required": ["path"],
+            },
+        },
+    },
 ]
+
